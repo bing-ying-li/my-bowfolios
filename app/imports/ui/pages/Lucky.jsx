@@ -1,7 +1,10 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
+// eslint-disable-next-line no-unused-vars
 import { Container, Row } from 'react-bootstrap';
 import { useTracker } from 'meteor/react-meteor-data';
+// eslint-disable-next-line no-unused-vars
+import PropTypes from 'prop-types';
 import { _ } from 'meteor/underscore';
 import { Profiles } from '../../api/profiles/Profiles';
 import { ProfilesInterests } from '../../api/profiles/ProfilesInterests';
@@ -10,6 +13,7 @@ import { Projects } from '../../api/projects/Projects';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { pageStyle } from './pageStyles';
 import { PageIDs } from '../utilities/ids';
+import ProfileCard from '../components/ProfileCard';
 
 /* Returns the Profile and associated Projects and Interests associated with the passed user email. */
 function getProfileData(email) {
@@ -22,7 +26,7 @@ function getProfileData(email) {
 }
 
 /* Renders the Profile Collection as a set of Cards. */
-const ProfilesPage = () => {
+const LuckyPage = () => {
 
   const { ready } = useTracker(() => {
     // Ensure that minimongo is populated with all collections prior to running render().
@@ -38,14 +42,14 @@ const ProfilesPage = () => {
   // There is a potential race condition. We might not be ready at this point.
   // Need to ensure that getProfileData doesn't throw an error on line 18.
   const profileData = emails.map(email => getProfileData(email));
+  const profile = _.sample(profileData);
   return ready ? (
     <Container id={PageIDs.profilesPage} style={pageStyle}>
       <Row xs={1} md={2} lg={4} className="g-2">
-        {/* eslint-disable-next-line react/jsx-no-undef */}
-        {profileData.map((profile, index) => <ProfileCard key={index} profile={profile} />)}
+        <ProfileCard profile={profile} />
       </Row>
     </Container>
   ) : <LoadingSpinner />;
 };
 
-export default ProfilesPage;
+export default LuckyPage;
